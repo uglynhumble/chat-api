@@ -1,0 +1,11 @@
+{
+  "type": "postgres",
+  "host": "chat-app",
+  "port": 9000,
+  "username": "postgres",
+  "password": "13082004",
+  "database": "testapo",
+  "entities": ["src/**/*.entity{.ts,.js}"],
+  "synchronize": true,
+  "logging": true
+}

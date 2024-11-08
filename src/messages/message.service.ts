@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './message.entity';
@@ -18,6 +18,12 @@ export class MessagesService {
   }
 
   findByChat(chatId: number): Promise<Message[]> {
-    return this.messagesRepository.find({ where: { chat: { id: chatId } } });
+    const chat = this.messagesRepository.find({
+      where: { chat: { id: chatId } },
+    });
+    if (!chat) {
+      throw new HttpException('chat not found', HttpStatus.NOT_FOUND);
+    }
+    return chat;
   }
 }

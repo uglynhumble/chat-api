@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Chat } from './chat.entity';
@@ -13,11 +18,20 @@ export class ChatsService {
 
   async create(users: User[]): Promise<Chat> {
     const chat = this.chatsRepository.create({ users });
+    if (chat) {
+      throw new HttpException('chat already exist', HttpStatus.FOUND);
+    }
     return this.chatsRepository.save(chat);
   }
 
-  findByUser(userId: number): Promise<Chat[]> {
-    return this.chatsRepository.find({ where: { users: { id: userId } } });
+  async findByUser(userId: number): Promise<Chat[]> {
+    const user = this.chatsRepository.find({
+      where: { users: { id: userId } },
+    });
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async findById(chatId: number): Promise<Chat> {
